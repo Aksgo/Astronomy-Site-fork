@@ -1,4 +1,53 @@
-const blog_data = [
+import { initializeApp } from "firebase/app";
+import {getFirestore, collection , doc, setDoc, getDocs} from "firebase/firestore";
+const firebaseConfig = {
+  apiKey: "AIzaSyB6D6or0h0tvZMrYiGQ6dIhOk4u21-EKbw",
+  authDomain: "astro-iit.firebaseapp.com",
+  projectId: "astro-iit",
+  storageBucket: "astro-iit.firebasestorage.app",
+  messagingSenderId: "156365410266",
+  appId: "1:156365410266:web:02809445d3c6dd39667ae3"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+let blog_data = []
+
+function jsonData(data){
+    const defImg = "https://assets-global.website-files.com/60fe7abd89d2398fce34e908/6115fa61dd2d3579dbf07075_SupportingImage2-space-ggc-blogpost-630pxwide.jpeg";
+    const defwriter = "../../images/writers/GovindswaroopRahangdale.jpg";
+    const title = data.title;
+    const author = data.author;
+    const slug = data.slug;
+    const description = data.description;
+    const date = data.date;
+    const category = data.category;
+    const heading = data.heading;
+    const text = data.content;
+    const blog_obj = {
+        "title":title,
+        "author":author,
+        "slug":slug,
+        "description":description,
+        "date":date,
+        "category":category,
+        "image":defImg,
+        "writer":defwriter,
+        "heading":heading,
+        "text":text
+    };
+    blog_data.push(blog_obj);
+
+}
+async function loadBlogs(){
+    const sn = await getDocs(collection(db, "blogs"));
+    sn.forEach((doc) => {
+      jsonData(doc.data());
+    });
+  }
+  
+loadBlogs();
+
+/*const blog_data = [
     {
         "title": "Why is the speed of light a finite constant?",
         "author": "Govindswaroop Rahangdale",
@@ -39,5 +88,5 @@ const blog_data = [
     
     
 ]
-
+*/
 export default blog_data
