@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import {getFirestore, collection , doc, setDoc, getDocs} from "firebase/firestore";
+import {Client, Storage} from "appwrite"
 const firebaseConfig = {
   apiKey: "AIzaSyB6D6or0h0tvZMrYiGQ6dIhOk4u21-EKbw",
   authDomain: "astro-iit.firebaseapp.com",
@@ -11,10 +12,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 let blog_data = []
-
-function jsonData(data){
-    const defImg = "https://assets-global.website-files.com/60fe7abd89d2398fce34e908/6115fa61dd2d3579dbf07075_SupportingImage2-space-ggc-blogpost-630pxwide.jpeg";
-    const defwriter = "../../images/writers/GovindswaroopRahangdale.jpg";
+const client = new Client();
+const storage = new Storage(client);
+client.setEndpoint('https://cloud.appwrite.io/v1').setProject('67777691001b45d492b8');
+function jsonData(data, count){
+    const header_img_url = storage.getFilePreview('677777dc00318c84924c',`blog-${count}`);
+    const headerImg = header_img_url;
+    const defwriter = storage.getFilePreview('677777dc00318c84924c',`blog-${count}-writer`);
     const title = data.title;
     const author = data.author;
     const slug = data.slug;
@@ -30,7 +34,7 @@ function jsonData(data){
         "description":description,
         "date":date,
         "category":category,
-        "image":defImg,
+        "image":headerImg,
         "writer":defwriter,
         "heading":heading,
         "text":text
@@ -39,9 +43,11 @@ function jsonData(data){
 
 }
 async function loadBlogs(){
+    let counter = 1;
     const sn = await getDocs(collection(db, "blogs"));
     sn.forEach((doc) => {
-      jsonData(doc.data());
+      jsonData(doc.data(),counter);
+      counter++;
     });
   }
   
