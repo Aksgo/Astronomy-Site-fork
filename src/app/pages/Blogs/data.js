@@ -1,4 +1,63 @@
-const blog_data = [
+import { initializeApp } from "firebase/app";
+import {getFirestore, collection , doc, setDoc, getDocs} from "firebase/firestore";
+import {Client, Storage} from "appwrite"
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCT_txTnewyhH8VFFNO5jgHvxyerbIzhk4",
+    authDomain: "astro-website-48956.firebaseapp.com",
+    projectId: "astro-website-48956",
+    storageBucket: "astro-website-48956.firebasestorage.app",
+    messagingSenderId: "1026726115415",
+    appId: "1:1026726115415:web:320cb60bf7dfddc5950b12",
+    measurementId: "G-60CE35ZVV8"
+  };
+  
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+let blog_data = []
+const client = new Client();
+const storage = new Storage(client);
+client.setEndpoint('https://cloud.appwrite.io/v1').setProject('67777691001b45d492b8');
+function jsonData(data, count){
+    const header_img_url = storage.getFilePreview('677777dc00318c84924c',`blog-${count}`);
+    const headerImg = header_img_url;
+    const defwriter = storage.getFilePreview('677777dc00318c84924c',`blog-${count}-writer`);
+    const title = data.title;
+    const author = data.author;
+    const slug = data.slug;
+    const description = data.description;
+    const date = data.date;
+    const category = data.category;
+    const heading = data.heading;
+    const text = data.content;
+    const blog_obj = {
+        "title":title,
+        "author":author,
+        "slug":slug,
+        "description":description,
+        "date":date,
+        "category":category,
+        "image":headerImg,
+        "writer":defwriter,
+        "heading":heading,
+        "text":text
+    };
+    blog_data.push(blog_obj);
+
+}
+async function loadBlogs(){
+    let counter = 1;
+    const sn = await getDocs(collection(db, "blogs"));
+    sn.forEach((doc) => {
+      jsonData(doc.data(),counter);
+      counter++;
+    });
+  }
+  
+loadBlogs();
+
+/*const blog_data = [
     {
         "title": "Why is the speed of light a finite constant?",
         "author": "Govindswaroop Rahangdale",
@@ -39,5 +98,5 @@ const blog_data = [
     
     
 ]
-
+*/
 export default blog_data
