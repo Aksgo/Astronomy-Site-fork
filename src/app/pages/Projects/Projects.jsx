@@ -7,7 +7,51 @@ import ObservatoryImage from '../../../../public/star.png'; // Replace with actu
 import SatelliteTrackerImage from '../../../../public/star.png'; // Replace with actual path
 import CubeSatImage from '../../../../public/star.png'; // Replace with actual path
 import star from '../../../../public/star.png'; // Update path to your custom cursor image
+import { initializeApp } from "firebase/app";
+import {getFirestore, collection , doc, setDoc, getDocs} from "firebase/firestore";
+import {Client, Storage} from "appwrite"
 
+const firebaseConfig = {
+    apiKey: "AIzaSyCT_txTnewyhH8VFFNO5jgHvxyerbIzhk4",
+    authDomain: "astro-website-48956.firebaseapp.com",
+    projectId: "astro-website-48956",
+    storageBucket: "astro-website-48956.firebasestorage.app",
+    messagingSenderId: "1026726115415",
+    appId: "1:1026726115415:web:320cb60bf7dfddc5950b12",
+    measurementId: "G-60CE35ZVV8"
+  };
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const client = new Client();
+const storage = new Storage(client);
+client.setEndpoint('https://cloud.appwrite.io/v1').setProject('67777691001b45d492b8');
+
+let projects = [];
+
+async function loadProjects(){
+    let counter = 1;
+    const snap = await getDocs(collection(db,"projects"));
+    snap.forEach((doc)=>{
+        const datap = doc.data();
+        counter++;
+        let imgf = false;
+        if(counter&1){
+            imgf=true;
+        }
+        const pimg = storage.getFilePreview('67840116003980398e18',`project-${counter-1}`);
+        const title = datap.title;
+        const des = datap.description;
+        const pobj = {
+            title:title,
+            image:pimg,
+            description:des,
+            imageFirst:imgf
+        }
+        projects.push(pobj);
+    });
+}
+loadProjects();
+/*
 const projects = [
     {
         title: "CubeSat",
@@ -47,7 +91,7 @@ const projects = [
     },
 
 ];
-
+*/
 const Projects = () => {
     const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 
@@ -83,7 +127,7 @@ const Projects = () => {
                     className={`project-item flex ${project.imageFirst ? 'flex-row' : 'flex-row-reverse'} mb-8`}
                 >
                     <div className="flex-1 flex items-center justify-center">
-                        <Image src={project.image} alt={project.title} className="w-full h-auto max-w-md" />
+                        <Image src={project.image} alt={project.title} className="w-full h-auto max-w-md" width={300} height={200}/>
                     </div>
                     <div className="flex-1 flex flex-col justify-center px-4 text-white">
                         <h2 className="text-2xl font-bold mb-2">{project.title}</h2>
