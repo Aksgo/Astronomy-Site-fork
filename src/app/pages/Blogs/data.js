@@ -1,24 +1,14 @@
 import { initializeApp } from "firebase/app";
 import {getFirestore, collection , doc, setDoc, getDocs} from "firebase/firestore";
-import {Client, Storage} from "appwrite"
-
-const firebaseConfig = {
-    apiKey: "AIzaSyCT_txTnewyhH8VFFNO5jgHvxyerbIzhk4",
-    authDomain: "astro-website-48956.firebaseapp.com",
-    projectId: "astro-website-48956",
-    storageBucket: "astro-website-48956.firebasestorage.app",
-    messagingSenderId: "1026726115415",
-    appId: "1:1026726115415:web:320cb60bf7dfddc5950b12",
-    measurementId: "G-60CE35ZVV8"
-  };
-  
+import {Client, Storage} from "appwrite";
+import { firebaseConfig, appwrite_pid } from "@/app/config";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 let blog_data = []
 const client = new Client();
+client.setEndpoint('https://cloud.appwrite.io/v1').setProject(appwrite_pid);
 const storage = new Storage(client);
-client.setEndpoint('https://cloud.appwrite.io/v1').setProject('67777691001b45d492b8');
 function jsonData(data, count){
     const header_img_url = storage.getFilePreview('677777dc00318c84924c',`blog-${count}`);
     const headerImg = header_img_url;

@@ -1,4 +1,37 @@
-const events_data = [
+import { initializeApp } from "firebase/app";
+import {getFirestore, collection , doc, setDoc, getDocs} from "firebase/firestore";
+import {Client, Storage} from "appwrite";
+import { firebaseConfig, appwrite_pid } from "@/app/config";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const client = new Client();
+client.setEndpoint('https://cloud.appwrite.io/v1').setProject(appwrite_pid);
+const storage = new Storage(client);
+
+let events_data = [];
+async function loadAct(){
+    let counter = 1;
+    const snap = await getDocs(collection(db, "activities"));
+    snap.forEach((docs) => {
+        const data = docs.data();
+        const actimg =   storage.getFilePreview('679d7ffd002633f04d7b',`activity-${counter}`);
+        const title = data.title;
+        const desc = data.description;
+        const actobj = {
+            title:title,
+            desc:desc,
+            img:actimg
+        }
+        counter+=1;
+        console.log(actobj);
+        events_data.push(actobj);
+    });
+}
+console.log(events_data);
+loadAct();
+/*
+events_data = [
     {
         "title" : "Theoretical Sessions",
         "desc" : "The Astronomy Club conducts various workshops and lectures regularly to benefit the students. These lectures are hosted by both the club members and guest lecturers on astronomy basics, like formation of stars and galaxies, modern astronomy, mathematical and analytical modelling to name a few.",
@@ -26,5 +59,5 @@ const events_data = [
         "img" : "https://assets-global.website-files.com/60fe7abd89d2398fce34e908/6115fa61dd2d3579dbf07075_SupportingImage2-space-ggc-blogpost-630pxwide.jpeg"
     },
 ]
-
+*/
 export default events_data
