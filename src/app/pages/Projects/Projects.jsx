@@ -9,22 +9,14 @@ import CubeSatImage from '../../../../public/star.png'; // Replace with actual p
 import star from '../../../../public/star.png'; // Update path to your custom cursor image
 import { initializeApp } from "firebase/app";
 import {getFirestore, collection , doc, setDoc, getDocs} from "firebase/firestore";
-import {Client, Storage} from "appwrite"
+import {Client, Storage} from "appwrite";
+import { firebaseConfig, appwrite_pid } from "@/app/config";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyCT_txTnewyhH8VFFNO5jgHvxyerbIzhk4",
-    authDomain: "astro-website-48956.firebaseapp.com",
-    projectId: "astro-website-48956",
-    storageBucket: "astro-website-48956.firebasestorage.app",
-    messagingSenderId: "1026726115415",
-    appId: "1:1026726115415:web:320cb60bf7dfddc5950b12",
-    measurementId: "G-60CE35ZVV8"
-  };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const client = new Client();
+client.setEndpoint('https://cloud.appwrite.io/v1').setProject(appwrite_pid);
 const storage = new Storage(client);
-client.setEndpoint('https://cloud.appwrite.io/v1').setProject('67777691001b45d492b8');
 
 let projects = [];
 
